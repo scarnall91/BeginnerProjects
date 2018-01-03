@@ -1,0 +1,71 @@
+import json
+import os, sys
+import string
+import random
+from itertools import permutations
+import timeit
+from itertools import chain, combinations
+import pandas as pd
+
+filename = "C:/Users/Steve/Downloads/words_dictionary.json"
+with open(filename,"r") as enlish_dictionary:
+    valid_words = json.load(enlish_dictionary)
+    
+word_list = {k:v for k, v in valid_words.items() if len(k)<=7 and len(k)>2}
+
+scrabble_values = {
+    "a":1,"e":1,"i":1,"o":1,"u":1,"l":1,"n":1,"s":1,"t":1,"r":1,
+    "d":2,"g":2,
+    "b":3,"c":3,"m":3,"p":3,
+    "f":4,"h":4,"v":4,"w":4,"y":4,
+    "k":5,
+    "j":8,"x":8,
+    "q":10,"z":10}
+
+def check_word(word):
+    try:
+        if word_list[word] == 1:
+            return "Valid"
+    except KeyError:
+        return "Invalid"
+    
+def create_dict(Result_List, value_list):
+    return dict(zip(Result_List, value_list))
+
+def powerset(seq):
+    if len(seq) <=1:
+        yield seq
+        yield []
+    else:
+        for item in powerset(seq[1:]):
+            yield [seq[0]]+item
+            yield item
+
+scrabble_set = []
+for i in range(7):
+    uinput = input('Enter letter '+str(i+1)+': ')
+    scrabble_set.append(uinput)
+    
+Result_List = []
+
+for i in powerset(scrabble_set):
+    a = 0
+    a = ''.join(i)
+    if check_word(a) == 'Valid':
+        Result_List.append(a)
+
+word_v = 0
+value_list = []
+
+for w in Result_List:
+    for l in w:
+        word_v = word_v + scrabble_values[l]
+    value_list.append(word_v)
+    word_v = 0
+        
+Final_Dict = create_dict(Result_List,value_list)
+
+df = pd.DataFrame([Final_Dict], columns=Final_Dict.keys())
+df = df.T
+df.columns=['value']
+df.sort_values(by='value',ascending=False)
