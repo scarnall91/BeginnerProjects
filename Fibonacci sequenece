@@ -1,0 +1,12 @@
+x = input('Enter the Fibonacci sequence number to run until: ')
+
+a = 0
+b = 1
+n = range(int(x))
+
+for nrs in n:
+    c = a + b
+    a = b
+    b = c
+    print("Step "+str(nrs)+": "+str(c))
+    
