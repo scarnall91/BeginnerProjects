@@ -1,0 +1,13 @@
+import urllib3
+from bs4 import BeautifulSoup
+import re
+
+page = 'https://battlefieldtracker.com/bf1/profile/psn/pQQQQn'
+response = requests.get(page)
+
+text = str(response.content)
+
+KDText = re.search('Kill Ratio.*[\d][.][\d]{2}',text).group()
+KDRatio = re.search('[\d].[\d]{2}',str(KDText)).group()
+
+print(KDRatio)
